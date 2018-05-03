@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Binary Tree</title>
+</head>
+
+<body>
+    node: <input type="text" id ="key" name="key"><br><br>
+    <button onclick="add_key()">submit</button><br><br>
+</body>
+</html> 
+
+<script>
+    // Object class
+    function BinarySearchTree(){
+        //const 宣告常數變數
+        const Node = function(key) {
+            this.key = key;
+            this.left = null;
+            this.right = null;
+	    };
+        // let 宣告區域變數
+        let root = null;
+
+        //insertNode: 加入非根節點
+        const insertNode = function(node, newNode){
+            //二元搜尋樹: 新節點比根節點小就往左邊
+            if(newNode.key < node.key){
+                if(node.left == null){
+                    node.left = newNode;
+                }
+                else{
+                    //沒有空位時，往左節點遞迴尋找
+                    insertNode(node.left, newNode);
+                }
+            }
+            //二元搜尋樹: 新節點等於節點值不做任何動作
+            else if(newNode.key == node.key){}
+            //二元搜尋樹: 新節點比根節點大(或等於)就往右邊
+            else{
+                if(node.right == null){
+                    node.right = newNode;
+                }
+                else{
+                    //沒有空位時，往右節點遞迴尋找
+                    insertNode(node.right, newNode);
+                }
+            }
+
+        };
+
+        this.insert = function(key) {
+            //建立根節點
+            let newNode = new Node(key);
+
+            if(root == null){
+                root = newNode;
+            }
+            else{
+                //使用insertNode
+                insertNode(root, newNode);
+            }
+        };
+
+        const inOrderTraverseNode = function(node, callback){
+            if(node != null){
+                inOrderTraverseNode(node.left,callback);
+                callback(node.key); //中序遍歷樹，由小到大排序
+                //printNode(node.key);
+                inOrderTraverseNode(node.right, callback);
+                //callback(node.key); //後序遍歷樹，訪問後代在訪問根節點
+                //printNode(node.key);
+            }
+        };
+
+        //中序遍歷樹
+        this.inOrderTraverse = function(callback){
+            //從root出發
+            inOrderTraverseNode(root, callback);
+        };
+
+        // function printNode(value) {
+        //     // 列印出節點鍵值
+        //     console.log(value);
+        //     //document.write(value+"<br>");
+        // }
+    }
+
+    let test_tree = new BinarySearchTree();
+    
+    function add_key(){ //為什麼test_tree 可以再函數中使用 ?????
+        this.key = parseInt(document.getElementById('key').value);
+
+        if (isNaN(key)){
+            window.alert("必須為數字");
+        }
+        else{
+            test_tree.insert(key);
+            test_tree.inOrderTraverse(function(node) {console.log(node)}); //輸入 11 15 20 9 7 輸出 11 15 20 7 9 (解決parseInt()，字串比大小是第一個字元)    
+        }
+    }
+
+    let tree = new BinarySearchTree();
+    
+    for(i=1;i<=9;i++){
+        for(j=1;j<=i;j++){
+            tree.insert(i*j);
+        }
+    }
+    //tree.inOrderTraverse(function(node) {console.log(node)});
+    
+    // function printNode(value) {
+    //         // 列印出節點鍵值
+    //         console.log(value);
+    //         //document.write(value+"<br>");
+    // }
+    // tree.inOrderTraverse(printNode);
+
+    //tree.inOrderTraverse(function(node) {console.log(node)});
+
+    // let tree_t = new BinarySearchTree();
+    // tree_t.insert(11);
+    // tree_t.insert(15);
+    // tree_t.insert(20);
+    // tree_t.insert(9);
+    // tree_t.insert(7);
+    // tree_t.inOrderTraverse(function(node) {console.log(node)}); //輸入 11 15 20 9 7 輸出 7 9 11 15 20
+
+    //tree.inOrderTraverse();
+</script>

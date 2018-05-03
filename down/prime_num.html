@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- <style>
+        table, td {
+            border: 1px solid black;
+        }
+    </style> -->
+</head>
+<body>
+    node: <input type="text" id ="key" name="key"><br><br>
+    <button onclick="data_input()">submit</button><br><br>
+</body>
+</html>
+
+<script>
+    var input;
+    var arr = new Array();
+    arr[0] = 2;// 第一個質數
+    //arr[1] = 3;// 第二個質數
+    //arr[2] = 3; // 紀錄判斷過的最大input
+
+    function insertTomytable(data, t_name){ // 輸出插入表格用
+        var x = document.createElement("TABLE");
+        x.setAttribute("id", t_name);
+        document.body.appendChild(x);
+
+        var t = document.getElementById(t_name);
+        var tr = t.insertRow();
+        var td = tr.insertCell();
+        td.innerText = data;
+    }
+
+    function data_input(){ // 判斷輸入是否為數字
+        var input = parseInt(document.getElementById('key').value);
+        var i, prime_bool;
+        var out_put = {o_true:" is a prime number~~~",o_false:" isn't a prime number!!!"};
+
+        if (isNaN(input)){
+            window.alert("必須為數字");
+        }
+        else if(input <= 0){
+            window.alert("必須大於零");
+        }
+        else{
+            if(input > arr[arr.length-1]){ 
+                for(i = arr[arr.length-1]; i < input; i++){
+                //for(i = arr[1]; i < input; i+=2){
+                    // 跳出回圈條件一定是 i < input
+                    // 因為trial_division(input)最後input如果為新的質數的話會加到表上，變動這個範圍會缺少質數
+
+                    // 用試除法去除，建立 2 ~ input-1 之間的質數陣列
+                    // 最小由3開始判斷，i固定為奇數
+                    trial_division(i);
+                }
+                //arr.splice(arr.length-1, 1, input);
+            }
+            else{
+                for(i=0; i<arr.length;i++){
+                    if(arr[i] > input){
+                        arr.splice(i, arr.length-i, );
+                        break;
+                    }
+                }
+
+                // for(i=2; i<arr.length;i++){
+                //     if(arr[i] >= input){
+                //         arr.splice(2, arr.length -2, );
+                //         break;
+                //     }
+                // }
+                // for(i = arr[1]; i < input; i+=2){
+                //     trial_division(i);
+                // }
+            }
+
+            console.log(arr);
+
+            // 用建立的質數去除
+            prime_bool = trial_division(input); // return true/false
+
+            if(prime_bool == true){
+                insertTomytable(input + out_put.o_true, "mytable")
+            }
+            else{
+                insertTomytable(input + out_put.o_false, "mytable")
+            }
+            // for(i=0; i<arr.length;i++){
+            //     if(arr[i] <= input){
+            //         console.log(arr[i]);
+            //     }
+            // }
+        }
+    }
+
+    function trial_division(input){ // 找出質數加入陣列
+        var flag =true;
+        var i, n;
+
+        n = input; // n的範圍會動態調整
+        if(arr.length ==0){
+            arr[0] = 2;
+        }
+        if (input == 1){ // 1 非質數
+            return false;
+        }
+
+        else if(input == 2){ // input 為質數 2
+
+            if(arr.indexOf(input)==-1){
+                arr.splice(arr.length, 0, input);
+            }
+            return true;
+            // console.log(arr);
+        }
+
+        // else if(input%2 == 0){ // input 為偶數
+        //     flage = false;
+        // // console.log(arr);
+        // }
+
+
+        // 最小由2開始判斷，且為質數
+        for(i = 0; i < arr.length && arr[i] <= n; n = input/arr[i], i++){
+
+        //for(i = 0; i < arr.length && arr[i] <= n; n = input/i, i++){
+        //for(i=2; i<=n; n=input/i, i+=2){
+        
+            // 在2~n之間有數字可以整除input
+            if( input%arr[i] == 0 && arr[i] != input){
+            //if( input%i == 0 && i != input){
+                flag = false;
+                break;
+            }
+        }
+
+        // 是質數的話加入arr陣列
+        if(flag == true){
+            if(arr.indexOf(input)==-1){
+                //arr.splice(arr.length-1, 0, input);
+                arr.splice(arr.length, 0, input);
+                //arr.splice(i+1, arr.length -i-1, input);
+                //console.log("length: " + arr.length + " i: "+i)
+                //arr.sort(function (a,b) {
+                //      return a - b;
+                // });
+            }
+        }
+        return flag;
+    }
+
+    // function trial_division(input){ // 判斷質數的試除法
+    //     var flag =true;
+    //     var i, n;
+    //     var out_put = {o_true:" is a prime number~~~",o_false:" isn't a prime number!!!"};
+
+    //     if (input == 1){ // 1 非質數
+    //         insertTomytable(input + out_put.o_false, "mytable")
+    //     }
+
+    //     else if(input == 2){ // input 為質數 2
+    //         insertTomytable(input + out_put.o_true, "mytable")
+
+    //         // if(arr.indexOf(input)==-1){
+    //         //     arr.splice(arr.length, 0, input);
+    //         //     arr.sort(function (a,b) {
+    //         //             return a - b;
+    //         //     });
+    //         // }
+    //         // console.log(arr);
+    //     }
+
+    //     else{
+    //         n = input; // n的範圍會動態調整
+
+    //         //for(i=3; i<=n; n=input/i, i+=2)
+    //         for(i = 0; i < arr.length && arr[i] <= n; n = input/i, i++){
+    //             // 在2~n之間有數字可以整除input => 非質數
+    //             if( input%arr[i] == 0 && arr[i] != input){
+    //                 insertTomytable(input + out_put.o_false, "mytable")
+    //                 flag = false;
+    //                 break;
+    //             }
+    //         }
+
+    //         // 是質數的話加入arr陣列
+    //         if(flag == true){
+    //             insertTomytable(input + out_put.o_true, "mytable")
+
+    //             if(arr.indexOf(input)==-1){
+    //                 arr.splice(arr.length, 0, input);
+    //                 arr.sort(function (a,b) {
+    //                 return a - b;
+    //                 });
+    //             }
+
+    //             console.log(arr);
+    //         }
+    //     }
+    // }
+</script>

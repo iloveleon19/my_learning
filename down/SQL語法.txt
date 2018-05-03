@@ -1,0 +1,45 @@
+www.blueshop.com.tw/board/FUM20041006152735ZFS/BRD20091218101244JGI.html
+
+SELECT A.品號, A.品名, B.出貨數量, C.進貨數量 
+
+FROM T1 AS A  
+
+     LEFT OUTER JOIN (select 品號, sum(數量) as 出貨數量 from T2 group by 品號) as B 
+
+                ON A.品號 = B.品號 
+
+     LEFT OUTER JOIN (select 品號, sum(數量) as 進貨數量 from T3 group by 品號) as C 
+
+                ON A.品號 = C.品號 
+
+WHERE (B.出貨數量 IS NOT NULL)  
+
+   OR (C.進貨數量 IS NOT NULL) 
+
+
+SELECT A.sn, A.name, B.ship_amount, C.stock_amount 
+
+FROM item AS A 
+
+     LEFT OUTER JOIN (select item_num, sum(amount) as ship_amount from ship group by item_num) as B 
+
+                ON A.sn = B.item_num 
+
+     LEFT OUTER JOIN (select item_num, sum(amount) as stock_amount from stock group by item_num) as C 
+
+                ON A.sn = C.item_num  
+
+WHERE (B.ship_amount IS NOT NULL)  
+
+   OR (C.stock_amount IS NOT NULL) 
+
+
+
+SELECT A.sn, A.name, B.ship_amount, C.stock_amount FROM item AS A LEFT OUTER JOIN (select item_num, sum(amount) as ship_amount from ship group by item_num) as B ON A.sn = B.item_num LEFT OUTER JOIN (select item_num, sum(amount) as stock_amount from stock group by item_num) as C ON A.sn = C.item_num WHERE ((B.ship_amount IS NOT NULL) OR (C.stock_amount IS NOT NULL));
+
+SELECT A.sn, A.name, B.ship_amount, C.stock_amount FROM item AS A LEFT JOIN (select item_num, sum(amount) as ship_amount from ship group by item_num) as B ON A.sn = B.item_num LEFT JOIN (select item_num, sum(amount) as stock_amount from stock group by item_num) as C ON A.sn = C.item_num WHERE (B.ship_amount IS NOT NULL) OR (C.stock_amount IS NOT NULL);
+
+
+
+
+SELECT item_num, SUM(amount) AS stock_amount FROM stock WHERE DATEDIFF('2018-03-30 22:37:58','2018-01-31')>=0 AND DATEDIFF('2018-03-30 22:37:58','2018-03-31')<=0 GROUP BY item_num;

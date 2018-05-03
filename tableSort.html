@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <table class="table table-striped" style="font-size:12px;" id="CheckResult">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>商品編號<span class="fa fa-sort" aria-hidden="true"></span></th>
+                <th>商品名稱</th>
+            </tr>
+            <tr>
+                <td>#</td>
+                <td>11</td>
+                <td>商品名稱</td>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</body>
+</html>
+
+
+<script>
+    var theads = $("#CheckResult").children("thead").children("tr").find("th");
+    var tbodys = $("#CheckResult").children("tbody").find("tr");
+    var btnSort = $("span[class*=sort]");
+    btnSort.on("click", function () {
+        var elementAt = $($(this).parent()).index();    // 第幾欄(從0開始)
+        var type = SortByIndex(elementAt, $(this).data("type"));    // 排序並取回排序方式(正序/倒序)
+        $(this).data("type", type); // 回填排序方式
+
+        // 更改排序圖示
+        if (type === "OrderByAsc") {
+            $(this).prop("class", "fa fa-sort-amount-asc")
+        }
+        else {
+            $(this).prop("class", "fa fa-sort-amount-desc")
+        }
+
+        // 重新填入tbody
+        $("#CheckResult").children("tbody").html("");
+        $("#CheckResult").children("tbody").append(tbodys);
+    });
+    
+    // 根據所需要排序的"欄"排序
+    function SortByIndex(index, type) {
+        var orderByType = "";
+        if (type == null || type === "OrderByDesc") {
+            // 正序
+            ClearSort();
+            tbodys.sort(function (x, y) {
+                var vx = $($(x).find("th")[index]).text();
+                var vy = $($(y).find("th")[index]).text();
+
+                return vx > vy ? 1 : -1;
+            });
+            orderByType = "OrderByAsc";
+        }
+        else {
+            // 倒序
+            ClearSort();
+            tbodys.sort(function (x, y) {
+                var vx = $($(x).find("th")[index]).text();
+                var vy = $($(y).find("th")[index]).text();
+
+                return vx < vy ? 1 : -1;
+            });
+            orderByType = "OrderByDesc";
+        }
+
+        if ($(theads[0]).text() === "#") {
+            // 有編號，需要重新整理編號
+            var i = 1;
+            tbodys.each(function (key, value) {
+                $($(value).find("th")[0]).text(i++);
+            });
+        }
+
+        return orderByType;
+    }
+
+    // 清除排序紀錄
+    function ClearSort() {
+        theads.each(function (key, value) {
+            $(value).removeData("type");    // 清除排序紀錄
+            $(value).children("span").prop("class", "fa fa-sort");  // 將排序圖示恢復預設
+        });
+    }
+</script>
